@@ -1,0 +1,82 @@
+#This script uses kmeans clustering on the data:
+
+#import required libraries:
+import numpy as np
+from sklearn.cluster import KMeans
+
+#Converts excel data to Comma Separated Values(CSV):
+import pandas as pd
+read_file = pd.read_excel (r'C:\Users\Nikola Tesla\Desktop\Sci Res stuff\sci res test copy edited.xlsx')
+read_file.to_csv (r'C:\Users\Nikola Tesla\Desktop\Sci Res stuff\sci res test copy edited.csv', index = None, header=True)
+
+#loads the data from the CSV file:
+csv_data = pd.read_csv(r'C:\Users\Nikola Tesla\Desktop\Sci Res stuff\sci res test copy edited.csv')
+csv_data.head()
+df = csv_data
+
+#customization of data:
+#removes 'Description' column:
+df = csv_data.drop('Description', axis=1)
+df.head()
+
+#removes 'Gene Symbol' column:
+df = df.drop('Gene Symbol', axis=1)
+df.head()
+
+#removes '# of quantified peptides' column:
+df = df.drop('# of quantified peptides', axis=1)
+df.head()
+
+#remove 'Protein ID Uniprot' column:
+df = df.drop('Protein ID Uniprot', axis=1)
+df.head()
+
+#Converts data to a Numpy Matrix:
+X = df.values
+#prints data for confirmation
+print (X)
+#Converts any values that are not a number(NAN), ex: infinity to numbers:
+X = np.nan_to_num(X)
+
+#Tests kmeans for optimal k value:
+sum_of_squared_differences = []
+k_values = list(range(1, 50))
+for i in k_values:
+    k_means = KMeans(init = "k-means++", n_clusters = i, n_init = 10)
+    k_means.fit(X)
+    sum_of_squared_differences.append(k_means.inertia_)
+
+# Plot sse against k:
+import matplotlib.pyplot as plt
+plt.plot(k_values, sum_of_squared_differences)
+plt.xlabel('k values')
+plt.ylabel('Sum of Squared Error')
+plt.title('Elbow Method For Choosing Optimal K Value')
+plt.show()
+
+
+#Applies k means to data using the optimal k value:
+k = 6
+k_means = KMeans(init = "k-means++", n_clusters = k, n_init = 10)
+k_means.fit(X)
+
+#assigns labels to the data under the variable 'labels':
+labels = k_means.labels_
+print(labels)
+
+#assigns labels to each row:
+df["Cluster #"] = labels
+df.head(5)
+
+#check centroid values by looking at mean of each cluster:
+center_values = df.groupby('Cluster #').mean()
+center_values
+
+#prints final result:
+print (df)
+
+#Converts results (saved as 'df') to excel spreadsheet:
+with pd.ExcelWriter('Mass Spectrometry Proteomics Analysis kmeans preliminary results.xlsx') as writer:
+  df.to_excel(writer, sheet_name = 'Cluster Numbers and Fold Change')
+  center_values.to_excel(writer, sheet_name = 'Centroid Values')
+  csv_data.to_excel(writer, sheet_name = 'Protein Information')
