@@ -1,0 +1,47 @@
+#This script uses DBSCAN clustering on the data:
+
+#import required libraries:
+import numpy as np
+from sklearn.cluster import DBSCAN
+from sklearn.datasets.samples_generator import make_blobs
+from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
+
+#Converts excel data to Comma Separated Values(CSV):
+import pandas as pd
+read_file = pd.read_excel (r'C:\Users\Nikola Tesla\Desktop\Sci Res stuff\sci res test copy edited.xlsx')
+read_file.to_csv (r'C:\Users\Nikola Tesla\Desktop\Sci Res stuff\sci res test copy edited.csv', index = None, header=True)
+
+#loads the data from the CSV file:
+csv_data = pd.read_csv(r'C:\Users\Nikola Tesla\Desktop\Sci Res stuff\sci res test copy edited.csv')
+csv_data.head()
+df = csv_data
+
+#customization of data:
+#removes 'Description' column:
+df = csv_data.drop('Description', axis=1)
+df.head()
+
+#removes 'Gene Symbol' column:
+df = df.drop('Gene Symbol', axis=1)
+df.head()
+
+#removes '# of quantified peptides' column:
+df = df.drop('# of quantified peptides', axis=1)
+df.head()
+
+#remove 'Protein ID Uniprot' column:
+df = df.drop('Protein ID Uniprot', axis=1)
+df.head()
+
+#Modeling
+X = df
+epsilon = 2.5
+minimumSamples = 7
+db = DBSCAN(eps=epsilon, min_samples=minimumSamples).fit(X)
+labels = db.labels_
+labels
+
+#adds labels to data
+labels = db.labels_
+labels
