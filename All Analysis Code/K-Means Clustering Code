@@ -76,7 +76,7 @@ center_values
 print (df)
 
 #Converts results (saved as 'df') to excel spreadsheet:
-with pd.ExcelWriter('Mass Spectrometry Proteomics Analysis kmeans preliminary results.xlsx') as writer:
-  df.to_excel(writer, sheet_name = 'Cluster Numbers and Fold Change')
+with pd.ExcelWriter('K Means Mass Spectrometry Proteomics Analysis Output for Fold Change.xlsx') as writer:
+  df.to_excel(writer, sheet_name = 'Cluster Numbers')
   center_values.to_excel(writer, sheet_name = 'Centroid Values')
   csv_data.to_excel(writer, sheet_name = 'Protein Information')

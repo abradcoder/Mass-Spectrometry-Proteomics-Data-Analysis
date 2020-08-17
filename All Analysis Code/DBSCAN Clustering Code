@@ -37,11 +37,14 @@ df.head()
 #Modeling
 X = df
 epsilon = 2.5
-minimumSamples = 7
+minimumSamples = 20
 db = DBSCAN(eps=epsilon, min_samples=minimumSamples).fit(X)
-labels = db.labels_
-labels
 
 #adds labels to data
 labels = db.labels_
 labels
+
+#Converts results (saved as 'df') to excel spreadsheet:
+with pd.ExcelWriter('DBSCAN Mass Spectrometry Proteomics Analysis Output for Fold Change.xlsx') as writer:
+  db.to_excel(writer, sheet_name = 'Cluster Numbers')
+  csv_data.to_excel(writer, sheet_name = 'Protein Information')
